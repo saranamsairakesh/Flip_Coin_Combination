@@ -23,4 +23,6 @@ do
    singletDictionary[$i]=$( echo $flipResult | awk -F , '{print $3}')
 done
 
-echo ${singletDictionary[@]}
+percentageOfHeads=$(($headsCount*100/10))
+percentageofTails=$(($tailsCount*100/10))
+echo "Heads= "$percentageOfHeads"%, Tails= "$percentageofTails"%"
