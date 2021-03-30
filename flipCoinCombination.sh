@@ -1,3 +1,4 @@
+#!/bin/bash
 declare -A singletDictionary
 declare -A doubletDictionary
 headsCount=0
@@ -23,15 +24,23 @@ do
    singletDictionary[$i]=$( echo $flipResult | awk -F , '{print $3}')
 done
 
+declare -A singletSort
+
+if [ $headsCount -ge $tailsCount ]
+then
+	singletSort[0]="H"
+	singletSort[1]="T"
+else
+	singletSort[0]="T"
+   singletSort[1]="H"
+fi
+
+echo "Sorted Singlet= "${singletSort[@]}
+
 for((i=1;i<=9;i++))
 do
    doubletDictionary[$i]=${singletDictionary[$i]}${singletDictionary[$(($i+1))]}
 done
-
-percentageOfHeads=$(($headsCount*100/10))
-percentageofTails=$(($tailsCount*100/10))
-echo "Percentage of Heads= "$percentageOfHeads"%"
-echo "Percentage of Tails= "$percentageofTails"%"
 
 HHCount=0
 HTCount=0
@@ -56,14 +65,35 @@ do
 	esac
 done
 
-percentageOfHH=$(($HHCount*100/9))
-percentageofHT=$(($HTCount*100/9))
-percentageOfTH=$(($THCount*100/9))
-percentageofTT=$(($TTCount*100/9))
-echo "percentage Of HH= "$percentageOfHH"%"
-echo "percentage Of HT= "$percentageofHT"%"
-echo "percentage Of TH= "$percentageOfTH"%"
-echo "percentage Of TT= "$percentageofTT"%"
+declare -A doubletCountSort
+declare -A doubletSort
+doubletCountSort[0]=$HHCount
+doubletCountSort[1]=$HTCount
+doubletCountSort[2]=$THCount
+doubletCountSort[3]=$TTCount
+doubletSort[0]="HH"
+doubletSort[1]="HT"
+doubletSort[2]="TH"
+doubletSort[3]="TT"
+
+for((i=0;i<4;i++))
+do
+	for((j=0;j<((4-$i-1));j++))
+	do
+		if [ ${doubletCountSort[$j]} -lt ${doubletCountSort[$(($j+1))]} ]
+		then
+			temp1=${doubletCountSort[$(($j+1))]}
+			doubletCountSort[$(($j+1))]=${doubletCountSort[$j]}
+			doubletCountSort[$j]=$temp1
+
+			temp2=${doubletSort[$(($j+1))]}
+         doubletSort[$(($j+1))]=${doubletSort[$j]}
+         doubletSort[$j]=$temp2
+		fi
+	done
+done
+
+echo "Sorted Doublet= "${doubletSort[@]}
 
 for((i=1;i<=8;i++))
 do
@@ -109,19 +139,40 @@ do
    esac
 done
 
-percentageOfHHH=$(($HHHCount*100/8))
-percentageofHHT=$(($HHTCount*100/8))
-percentageOfHTH=$(($HTHCount*100/8))
-percentageofTHH=$(($THHCount*100/8))
-percentageOfTTT=$(($TTTCount*100/8))
-percentageofTTH=$(($TTHCount*100/8))
-percentageOfTHT=$(($THTCount*100/8))
-percentageofHTT=$(($HTTCount*100/8))
-echo "percentage Of HHH= "$percentageOfHHH"%"
-echo "percentage Of HHT= "$percentageofHHT"%"
-echo "percentage Of HTH= "$percentageOfHTH"%"
-echo "percentage Of THH= "$percentageofTHH"%"
-echo "percentage Of TTT= "$percentageOfTTT"%"
-echo "percentage Of TTH= "$percentageofTTH"%"
-echo "percentage Of THT= "$percentageOfTHT"%"
-echo "percentage Of HTT= "$percentageofHTT"%"
+declare -A tripletCountSort
+declare -A tripletSort
+tripletCountSort[0]=$HHHCount
+tripletCountSort[1]=$HHTCount
+tripletCountSort[2]=$HTHCount
+tripletCountSort[3]=$THHCount
+tripletCountSort[4]=$TTTCount
+tripletCountSort[5]=$TTHCount
+tripletCountSort[6]=$THTCount
+tripletCountSort[7]=$HTTCount
+tripletSort[0]="HHH"
+tripletSort[1]="HHT"
+tripletSort[2]="HTH"
+tripletSort[3]="THH"
+tripletSort[4]="TTT"
+tripletSort[5]="TTH"
+tripletSort[6]="THT"
+tripletSort[7]="HTT"
+
+for((i=0;i<8;i++))
+do
+	for((j=0;j<((8-$i-1));j++))
+	do
+		if [ ${tripletCountSort[$j]} -lt ${tripletCountSort[$(($j+1))]} ]
+		then
+			temp1=${tripletCountSort[$(($j+1))]}
+			tripletCountSort[$(($j+1))]=${tripletCountSort[$j]}
+			tripletCountSort[$j]=$temp1
+
+			temp2=${tripletSort[$(($j+1))]}
+         tripletSort[$(($j+1))]=${tripletSort[$j]}
+         tripletSort[$j]=$temp2
+		fi
+	done
+done
+
+echo "Sorted Triplet= "${tripletSort[@]}
