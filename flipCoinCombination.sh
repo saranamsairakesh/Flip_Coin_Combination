@@ -16,6 +16,32 @@ function flipCoin(){
    echo $headsCount","$tailsCount","$result
 }
 
+function sorting(){
+	totalArray=( "$@" )
+	fullLength=${#totalArray[@]}
+	halfLength=$(($fullLength/2))
+	for((i=0;i<$halfLength;i++))
+	do
+		for((j=0;j<$(($halfLength-$i-1));j++))
+		do
+			if [ ${totalArray[$j]} -lt ${totalArray[$(($j+1))]} ]
+			then
+				temp1=${totalArray[$(($j+1))]}
+				totalArray[$(($j+1))]=${totalArray[$j]}
+				totalArray[$j]=$temp1
+
+				temp2=${totalArray[$(($halfLength+$j+1))]}
+            totalArray[$(($halfLength+$j+1))]=${totalArray[$(($halfLength+$j))]}
+            totalArray[$(($halfLength+$j))]=$temp2
+			fi
+		done
+	done
+	for((i=0;i<$halfLength;i++))
+	do
+		echo ${totalArray[$(($halfLength+$i))]}" : "${totalArray[$i]}
+	done
+}
+
 for((i=1;i<=10;i++))
 do
    flipResult="$( flipCoin $(($RANDOM%2)) )"
@@ -25,17 +51,14 @@ do
 done
 
 declare -A singletSort
+declare -A singletCountSort
+singletCountSort[0]=$headsCount
+singletCountSort[1]=$tailsCount
+singletSort[0]="H"
+singletSort[1]="T"
 
-if [ $headsCount -ge $tailsCount ]
-then
-	singletSort[0]="H"
-	singletSort[1]="T"
-else
-	singletSort[0]="T"
-   singletSort[1]="H"
-fi
-
-echo "Sorted Singlet= "${singletSort[@]}
+echo "Singlet Sorting: "
+sorting "${singletCountSort[@]}" "${singletSort[@]}"
 
 for((i=1;i<=9;i++))
 do
@@ -76,24 +99,8 @@ doubletSort[1]="HT"
 doubletSort[2]="TH"
 doubletSort[3]="TT"
 
-for((i=0;i<4;i++))
-do
-	for((j=0;j<((4-$i-1));j++))
-	do
-		if [ ${doubletCountSort[$j]} -lt ${doubletCountSort[$(($j+1))]} ]
-		then
-			temp1=${doubletCountSort[$(($j+1))]}
-			doubletCountSort[$(($j+1))]=${doubletCountSort[$j]}
-			doubletCountSort[$j]=$temp1
-
-			temp2=${doubletSort[$(($j+1))]}
-         doubletSort[$(($j+1))]=${doubletSort[$j]}
-         doubletSort[$j]=$temp2
-		fi
-	done
-done
-
-echo "Sorted Doublet= "${doubletSort[@]}
+echo "Doublet Sorting: "
+sorting "${doubletCountSort[@]}" "${doubletSort[@]}"
 
 for((i=1;i<=8;i++))
 do
@@ -158,21 +165,5 @@ tripletSort[5]="TTH"
 tripletSort[6]="THT"
 tripletSort[7]="HTT"
 
-for((i=0;i<8;i++))
-do
-	for((j=0;j<((8-$i-1));j++))
-	do
-		if [ ${tripletCountSort[$j]} -lt ${tripletCountSort[$(($j+1))]} ]
-		then
-			temp1=${tripletCountSort[$(($j+1))]}
-			tripletCountSort[$(($j+1))]=${tripletCountSort[$j]}
-			tripletCountSort[$j]=$temp1
-
-			temp2=${tripletSort[$(($j+1))]}
-         tripletSort[$(($j+1))]=${tripletSort[$j]}
-         tripletSort[$j]=$temp2
-		fi
-	done
-done
-
-echo "Sorted Triplet= "${tripletSort[@]}
+echo "Triplet Sorting: "
+sorting "${tripletCountSort[@]}" "${tripletSort[@]}"
